@@ -112,4 +112,12 @@ public class Bullet {
     public void setDir(int dir) {
         this.dir = dir;
     }
+
+    public int getyAccelate() {
+        return yAccelate;
+    }
+
+    public void setyAccelate(int yAccelate) {
+        this.yAccelate = yAccelate;
+    }
 }

@@ -144,9 +144,13 @@ public class Monster {
         bulletList.add(bullet);
     }
 
-    private void updateShift(int shift) {
+    public void updateShift(int shift) {
         x -= shift;
         //update bullet
+        for (Bullet bullet : bulletList) {
+            if (bullet != null)
+                bullet.setX(bullet.getX() - shift);
+        }
     }
 
 
@@ -189,7 +193,7 @@ public class Monster {
         }
     }
 
-    private void checkBullet() {
+    void checkBullet() {
         List<Bullet> delList = new ArrayList<>();
 
         for (Bullet bullet : bulletList) {

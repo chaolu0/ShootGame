@@ -4,6 +4,8 @@ package com.shxy.game.component;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
@@ -53,8 +55,12 @@ public class ViewManager {
 
     public static int SCREEN_WIDTH;
     public static int SCREEN_HEIGHT;
-    private static Bitmap map;
+    public static Bitmap map;
 
+    public static void initScreen(int width, int height) {
+        SCREEN_WIDTH = (short) width;
+        SCREEN_HEIGHT = (short) height;
+    }
 
     public static void loadResouce() {
         soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
@@ -64,20 +70,17 @@ public class ViewManager {
         soundMap.put(2, soundPool.load(MainActivity.mainActivity, R.raw.bomb, 1));
         soundMap.put(3, soundPool.load(MainActivity.mainActivity, R.raw.oh, 1));
 
-        Bitmap temp = createBitmapById(MainActivity.res,R.drawable.map);
-        if (temp!=null && !temp.isRecycled()){
+        Bitmap temp = createBitmapById(MainActivity.res, R.drawable.map);
+        if (temp != null && !temp.isRecycled()) {
             int height = temp.getHeight();
             /**
              * ????????????
              */
-            if (height != SCREEN_HEIGHT && SCREEN_HEIGHT != 0)
-            {
+            if (height != SCREEN_HEIGHT && SCREEN_HEIGHT != 0) {
                 scale = (float) SCREEN_HEIGHT / (float) height;
                 map = Graphics.scale(temp, temp.getWidth() * scale, height * scale);
                 temp.recycle();
-            }
-            else
-            {
+            } else {
                 map = temp;
             }
         }
@@ -182,37 +185,57 @@ public class ViewManager {
         manDieImage[4] = createBitmapByID(MainActivity.res, R.drawable.man_die_5, scale);
     }
 
-    public static Bitmap createBitmapById(Resources res,int id) {
+    public static Bitmap createBitmapById(Resources res, int id) {
         return BitmapFactory.decodeResource(res, id, null);
     }
 
-    private static Bitmap createBitmapByID(Resources res, int resID, float scale)
-    {
-        try
-        {
+    private static Bitmap createBitmapByID(Resources res, int resID, float scale) {
+        try {
             InputStream is = res.openRawResource(resID);
             Bitmap bitmap = BitmapFactory.decodeStream(is, null, null);
-            if (bitmap == null || bitmap.isRecycled())
-            {
+            if (bitmap == null || bitmap.isRecycled()) {
                 return null;
             }
-            if (scale <= 0 || scale == 1f)
-            {
+            if (scale <= 0 || scale == 1f) {
                 return bitmap;
             }
             int width = (int) (bitmap.getWidth() * scale);
             int height = (int) (bitmap.getHeight() * scale);
             Bitmap newBitmap = Graphics.scale(bitmap, width, height);
-            if (!bitmap.isRecycled() && !bitmap.equals(newBitmap))
-            {
+            if (!bitmap.isRecycled() && !bitmap.equals(newBitmap)) {
                 bitmap.recycle();
             }
             return newBitmap;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return null;
         }
+    }
+
+    public static void clearScreen(Canvas c) {
+        c.drawColor(Color.BLACK);
+    }
+
+    public static void drawGame(Canvas canvas) {
+        if (canvas == null)
+            return;
+        if (map != null && !map.isRecycled()) {
+            int width = map.getWidth() + GameView.player.getShift();
+            Graphics.drawImage(canvas,map,0,0,-GameView.player.getShift(),
+                    0,width,map.getHeight());
+            int totalWidth = width;
+
+            while(totalWidth<ViewManager.SCREEN_WIDTH){
+                int mapWidth = map.getWidth();
+                int drawWidth = ViewManager.SCREEN_WIDTH -totalWidth;
+                if (mapWidth<drawWidth){
+                    drawWidth = mapWidth;
+                }
+                Graphics.drawImage(canvas,map,totalWidth,0,0,0,
+                        drawWidth, map.getHeight());
+            }
+        }
+        GameView.player.draw(canvas);
+        MonsterManager.drawMonster(canvas);
     }
 
 }

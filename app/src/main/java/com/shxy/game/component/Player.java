@@ -88,7 +88,7 @@ public class Player {
         return action % 2 == 0 ? DIR_LEFT : DIR_RIGHT;
     }
 
-    private int getShift() {
+    public int getShift() {
         if (x <= 0 || y <= 0)
             initPosition();
         return X_DEFAULT - x;
@@ -233,7 +233,7 @@ public class Player {
                 continue;
             bullet.move();
             int trans = bullet.getDir() == Player.DIR_LEFT ?
-                    Graphics.TRANS_MIRROR : Graphics.TRANS_NONE
+                    Graphics.TRANS_MIRROR : Graphics.TRANS_NONE;
             Graphics.drawMatrixImage(canvas, bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
                     trans, bullet.getX(), bullet.getY(), 0, Graphics.TIMES_SCALE);
         }
@@ -270,17 +270,92 @@ public class Player {
         ViewManager.soundPool.play(ViewManager.soundMap.get(1), 1, 1, 0, 0, 1);
     }
 
-    private void move(){
-        if (move == MOVE_RIGHT){
-            MonsterManager.updatePosition(ViewManager.scale*6);
+    private void move() {
+        if (move == MOVE_RIGHT) {
+            MonsterManager.updatePosition((int) (ViewManager.scale * 6));
 
-            setX((int) (getX() + 6*ViewManager.scale));
-            if (!isJump){
+            setX((int) (getX() + 6 * ViewManager.scale));
+            if (!isJump) {
                 setAction(ACTION_RUN_RIGHT);
             }
-        }else if (move == MOVE_LEFT){
-
+        } else if (move == MOVE_LEFT) {
+            if (getX() - (int) (6 * ViewManager.scale) < Player.X_DEFAULT) {
+                MonsterManager.updatePosition(-(getX() - Player.X_DEFAULT));
+            } else {
+                MonsterManager.updatePosition(-(int) (6 * ViewManager.scale));
+            }
+            setX(getX() - (int) (6 * ViewManager.scale));
+            if (!isJump) {
+                setAction(Player.ACTION_RUN_LEFT);
+            }
+        } else if (getAction() != Player.ACTION_JUMP_LEFT
+                && getAction() != ACTION_JUMP_RIGHT) {
+            if (!isJump) {
+                setAction(Player.ACTION_STAND_RIGHT);
+            }
         }
+
+    }
+
+    public void logic() {
+        if (!isJump) {
+            move();
+            return;
+        }
+        if (!isJumpMax) {
+            setAction(getDir() == DIR_RIGHT ? Player.ACTION_JUMP_RIGHT :
+                    Player.ACTION_JUMP_LEFT);
+            setY(getY() - (int) (8 * ViewManager.scale));
+            setBulletYAccelate(-(int) (2 * ViewManager.scale));
+
+            if (getY() <= Player.Y_JUMP_MAX) {
+                isJumpMax = true;
+            }
+        } else {
+            jumpStopCount--;
+            if (jumpStopCount <= 0) {
+                setY(getY() + (int) (8 * ViewManager.scale));
+                setBulletYAccelate((int) (2 * ViewManager.scale));
+
+                if (getY() >= Player.Y_DEFAULT) {
+                    setY(Player.Y_DEFAULT);
+                    isJump = false;
+                    isJumpMax = false;
+                    setAction(Player.ACTION_STAND_RIGHT);
+                } else {
+                    setAction(getDir() == Player.DIR_RIGHT ? Player.ACTION_JUMP_RIGHT :
+                            ACTION_JUMP_LEFT);
+                }
+            }
+        }
+        move();
+    }
+
+    private void setBulletYAccelate(int acc) {
+
+        for (Bullet bullet : bulletList) {
+            if (bullet == null || bullet.getyAccelate() != 0) {
+                continue;
+            }
+            bullet.setyAccelate(acc);
+        }
+    }
+
+    public void updateBulletShift(int shift) {
+        for (Bullet bullet : bulletList) {
+            if (bullet == null) {
+                continue;
+            }
+            bullet.setX(bullet.getX() - shift);
+        }
+    }
+
+    public int getMove() {
+        return move;
+    }
+
+    public void setMove(int move) {
+        this.move = move;
     }
 
     public int getHp() {
@@ -292,14 +367,29 @@ public class Player {
     }
 
     public int getX() {
+        if (x <= 0 || y <= 0)
+            initPosition();
         return x;
     }
 
     public void setX(int x) {
-        this.x = x;
+        this.x = x % (ViewManager.map.getWidth() + X_DEFAULT);
+        if (this.x < X_DEFAULT) {
+            this.x = X_DEFAULT;
+        }
     }
 
-    public boolean isJump(){
+    public int getY() {
+        if (x <= 0 || y <= 0)
+            initPosition();
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public boolean isJump() {
         return isJump;
     }
 
@@ -309,5 +399,19 @@ public class Player {
 
     public void setAction(int action) {
         this.action = action;
+    }
+
+
+    public void setJump(boolean jump) {
+        isJump = jump;
+        jumpStopCount = 6;
+    }
+
+    public int getLeftShootTime() {
+        return leftShootTime;
+    }
+
+    public void setLeftShootTime(int leftShootTime) {
+        this.leftShootTime = leftShootTime;
     }
 }
