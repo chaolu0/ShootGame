@@ -78,6 +78,7 @@ public class ViewManager {
              */
             if (height != SCREEN_HEIGHT && SCREEN_HEIGHT != 0) {
                 scale = (float) SCREEN_HEIGHT / (float) height;
+                System.out.println("scale = " + scale);
                 map = Graphics.scale(temp, temp.getWidth() * scale, height * scale);
                 temp.recycle();
             } else {
@@ -205,6 +206,7 @@ public class ViewManager {
             if (!bitmap.isRecycled() && !bitmap.equals(newBitmap)) {
                 bitmap.recycle();
             }
+            System.out.println("newBitmap.size =" + newBitmap.getWidth() + " , " + newBitmap.getHeight());
             return newBitmap;
         } catch (Exception e) {
             return null;
@@ -220,17 +222,17 @@ public class ViewManager {
             return;
         if (map != null && !map.isRecycled()) {
             int width = map.getWidth() + GameView.player.getShift();
-            Graphics.drawImage(canvas,map,0,0,-GameView.player.getShift(),
-                    0,width,map.getHeight());
+            Graphics.drawImage(canvas, map, 0, 0, -GameView.player.getShift(),
+                    0, width, map.getHeight());
             int totalWidth = width;
 
-            while(totalWidth<ViewManager.SCREEN_WIDTH){
+            while (totalWidth < ViewManager.SCREEN_WIDTH) {
                 int mapWidth = map.getWidth();
-                int drawWidth = ViewManager.SCREEN_WIDTH -totalWidth;
-                if (mapWidth<drawWidth){
+                int drawWidth = ViewManager.SCREEN_WIDTH - totalWidth;
+                if (mapWidth < drawWidth) {
                     drawWidth = mapWidth;
                 }
-                Graphics.drawImage(canvas,map,totalWidth,0,0,0,
+                Graphics.drawImage(canvas, map, totalWidth, 0, 0, 0,
                         drawWidth, map.getHeight());
                 totalWidth += drawWidth;
             }

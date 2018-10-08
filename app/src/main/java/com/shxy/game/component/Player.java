@@ -271,7 +271,7 @@ public class Player {
     }
 
     private void move() {
-        System.out.println("move = " + move);
+//        System.out.println("move = " + move);
         if (move == MOVE_RIGHT) {
             MonsterManager.updatePosition((int) (ViewManager.scale * 6));
 
@@ -304,7 +304,7 @@ public class Player {
             return;
         }
         if (!isJumpMax) {
-            System.out.println("!max dir = " + action);
+//            System.out.println("!max dir = " + action);
             setAction(getDir() == DIR_RIGHT ? Player.ACTION_JUMP_RIGHT :
                     Player.ACTION_JUMP_LEFT);
             setY(getY() - (int) (8 * ViewManager.scale));
@@ -314,7 +314,7 @@ public class Player {
                 isJumpMax = true;
             }
         } else {
-            System.out.println("max dir = " + action);
+//            System.out.println("max dir = " + action);
             jumpStopCount--;
             if (jumpStopCount <= 0) {
                 setY(getY() + (int) (8 * ViewManager.scale));
@@ -401,7 +401,7 @@ public class Player {
     }
 
     public void setAction(int action) {
-        System.out.println("action is " + action);
+//        System.out.println("action is " + action);
         this.action = action;
     }
 

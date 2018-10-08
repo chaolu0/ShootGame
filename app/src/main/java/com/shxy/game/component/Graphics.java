@@ -185,11 +185,19 @@ public class Graphics
 			default:
 				break;
 		}
+
 		// 如果rotate、degree为0，表明不涉及旋转，
 		// 如果scaleX等于TIMES_SCALE，表明不涉及缩放
 		if (rotate == 0 && degree == 0
 			&& scaleX == TIMES_SCALE)
 		{    // 即scale=1无缩放， rotate=0无旋转
+			System.out.println("scale = " + scaleX);
+			System.out.println("scale = " + drawX);
+			System.out.println("scale = " + drawY);
+			System.out.println("scale = " + srcX);
+			System.out.println("scale = " + srcY);
+			System.out.println("scale = " + width);
+			System.out.println("scale = " + height);
 			drawImage(canvas, src, drawX, drawY, srcX, srcY, width, height);
 		}
 		else

@@ -13,6 +13,7 @@ public class MonsterManager {
     public static final List<Monster> monsterList = new ArrayList<>();
 
     public static void generateMonster() {
+
         if (monsterList.size() < 3 + Utils.rand(3)) {
             Monster monster = new Monster(1 + Utils.rand(3));
             monsterList.add(monster);
@@ -72,8 +73,8 @@ public class MonsterManager {
                             1, 1, 0, 0, 1);
                     delList.add(monster);
                     GameView.player.setHp(GameView.player.getHp() - 10);
-                    continue;
                 }
+                continue;
             }
             for (Bullet bullet : bulletList) {
                 if (bullet == null || !bullet.isEffect())
@@ -98,7 +99,7 @@ public class MonsterManager {
             monster.checkBullet();
         }
         dieMonsterList.addAll(delList);
-        monsterList.removeAll(delBulletList);
+        monsterList.removeAll(delList);
     }
 
     public static void drawMonster(Canvas canvas) {
@@ -118,6 +119,7 @@ public class MonsterManager {
                 continue;
             monster.draw(canvas);
             if (monster.getDrawDieCount() <= 0) {
+                System.out.println("drawDieCount = " + monster.getDrawDieCount());
                 delList.add(monster);
             }
         }

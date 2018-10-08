@@ -74,7 +74,9 @@ public class Monster {
         drawIndex = drawIndex % bitmaps.length;
 
         Bitmap bitmap = bitmaps[drawIndex];
-
+        if (bitmap == null || bitmap.isRecycled()) {
+            return;
+        }
         int drawX = x;
         if (isDie) {
             if (type == TYPE_BOMB) {
@@ -82,11 +84,6 @@ public class Monster {
             } else if (type == TYPE_MAN) {
                 drawX = (int) (x + ViewManager.scale * 50);
             }
-        }
-        if (bitmap == null){
-            System.err.println("isDie?  = " + isDie);
-            System.err.println("Bitmaps size  = " + bitmaps.length);
-            System.err.println("drawIndex  = " + drawIndex);
         }
         int drawY = y - bitmap.getHeight();
 
@@ -105,6 +102,7 @@ public class Monster {
         {
             // 如果怪物是人，只在第3帧才发射子弹
             if (type == TYPE_MAN && drawIndex == 2) {
+//                System.out.println(type + "  draw bullet");
                 addBullet();
             }
             // 如果怪物是飞机，只在最后一帧才发射子弹
@@ -127,9 +125,15 @@ public class Monster {
 
     private int getBulletType() {
         switch (type) {
-
+            case TYPE_BOMB:
+                return 0;
+            case TYPE_FLY:
+                return Bullet.BULLET_TYPE_3;
+            case TYPE_MAN:
+                return Bullet.BULLET_TYPE_2;
+            default:
+                return 0;
         }
-        return 0;
     }
 
     private void addBullet() {

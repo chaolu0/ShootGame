@@ -48,7 +48,7 @@ public class Bullet {
     }
 
     public int getSpeedX() {
-        int sign = dir == Player.DIR_RIGHT ? 1 : 2;
+        int sign = dir == Player.DIR_RIGHT ? 1 : -1;
         switch (type) {
             case BULLET_TYPE_1:
                 return (int) (ViewManager.scale * 12 * sign);
