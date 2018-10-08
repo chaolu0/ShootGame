@@ -83,7 +83,11 @@ public class Monster {
                 drawX = (int) (x + ViewManager.scale * 50);
             }
         }
-
+        if (bitmap == null){
+            System.err.println("isDie?  = " + isDie);
+            System.err.println("Bitmaps size  = " + bitmaps.length);
+            System.err.println("drawIndex  = " + drawIndex);
+        }
         int drawY = y - bitmap.getHeight();
         Graphics.drawMatrixImage(canvas, bitmap, 0, 0, bitmap.getWidth(),
                 bitmap.getHeight(), Graphics.TRANS_NONE, drawX, drawY, 0, Graphics.TIMES_SCALE);

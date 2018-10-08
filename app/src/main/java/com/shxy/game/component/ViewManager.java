@@ -232,6 +232,7 @@ public class ViewManager {
                 }
                 Graphics.drawImage(canvas,map,totalWidth,0,0,0,
                         drawWidth, map.getHeight());
+                totalWidth += drawWidth;
             }
         }
         GameView.player.draw(canvas);

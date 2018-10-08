@@ -13,12 +13,12 @@ public class Player {
 
     public static final int MAX_HP = 500;
 
-    public static final int ACTION_STAND_LEFT = 1;
-    public static final int ACTION_STAND_RIGHT = 2;
-    public static final int ACTION_RUN_LEFT = 3;
-    public static final int ACTION_RUN_RIGHT = 4;
-    public static final int ACTION_JUMP_LEFT = 5;
-    public static final int ACTION_JUMP_RIGHT = 6;
+    public static final int ACTION_STAND_RIGHT = 1;
+    public static final int ACTION_STAND_LEFT = 2;
+    public static final int ACTION_RUN_RIGHT = 3;
+    public static final int ACTION_RUN_LEFT = 4;
+    public static final int ACTION_JUMP_RIGHT = 5;
+    public static final int ACTION_JUMP_LEFT = 6;
 
     public static final int DIR_RIGHT = 1;
     public static final int DIR_LEFT = 2;
@@ -41,8 +41,8 @@ public class Player {
     private List<Bullet> bulletList = new ArrayList<>();
 
     public static final int MOVE_STAND = 0;
-    public static final int MOVE_LEFT = 0;
-    public static final int MOVE_RIGHT = 0;
+    public static final int MOVE_LEFT = 1;
+    public static final int MOVE_RIGHT = 2;
 
     private int move = MOVE_STAND;
 
@@ -114,16 +114,16 @@ public class Player {
                 drawAni(canvas, ViewManager.legStandImage, ViewManager.headStandImage, DIR_RIGHT);
                 break;
             case ACTION_RUN_LEFT:
-                drawAni(canvas, ViewManager.legRunImage, ViewManager.legRunImage, DIR_LEFT);
+                drawAni(canvas, ViewManager.legRunImage, ViewManager.headRunImage, DIR_LEFT);
                 break;
             case ACTION_RUN_RIGHT:
-                drawAni(canvas, ViewManager.legRunImage, ViewManager.legRunImage, DIR_RIGHT);
+                drawAni(canvas, ViewManager.legRunImage, ViewManager.headRunImage, DIR_RIGHT);
                 break;
             case ACTION_JUMP_LEFT:
-                drawAni(canvas, ViewManager.legJumpImage, ViewManager.legJumpImage, DIR_LEFT);
+                drawAni(canvas, ViewManager.legJumpImage, ViewManager.headJumpImage, DIR_LEFT);
                 break;
             case ACTION_JUMP_RIGHT:
-                drawAni(canvas, ViewManager.legJumpImage, ViewManager.legJumpImage, DIR_RIGHT);
+                drawAni(canvas, ViewManager.legJumpImage, ViewManager.headJumpImage, DIR_RIGHT);
                 break;
         }
     }
@@ -172,7 +172,7 @@ public class Player {
         }
         drawY = drawY - bitmap2.getHeight() + (int) (10 * ViewManager.scale);
 
-        Graphics.drawMatrixImage(canvas, bitmap2, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
+        Graphics.drawMatrixImage(canvas, bitmap2, 0, 0, bitmap2.getWidth(), bitmap2.getHeight(),
                 trans, drawX, drawY, 0, Graphics.TIMES_SCALE);
 
         currentHeadDrawX = drawX;
@@ -271,6 +271,7 @@ public class Player {
     }
 
     private void move() {
+        System.out.println("move = " + move);
         if (move == MOVE_RIGHT) {
             MonsterManager.updatePosition((int) (ViewManager.scale * 6));
 
@@ -303,6 +304,7 @@ public class Player {
             return;
         }
         if (!isJumpMax) {
+            System.out.println("!max dir = " + action);
             setAction(getDir() == DIR_RIGHT ? Player.ACTION_JUMP_RIGHT :
                     Player.ACTION_JUMP_LEFT);
             setY(getY() - (int) (8 * ViewManager.scale));
@@ -312,6 +314,7 @@ public class Player {
                 isJumpMax = true;
             }
         } else {
+            System.out.println("max dir = " + action);
             jumpStopCount--;
             if (jumpStopCount <= 0) {
                 setY(getY() + (int) (8 * ViewManager.scale));
@@ -398,6 +401,7 @@ public class Player {
     }
 
     public void setAction(int action) {
+        System.out.println("action is " + action);
         this.action = action;
     }
 
